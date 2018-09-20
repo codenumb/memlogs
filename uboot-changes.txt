@@ -1,0 +1,326 @@
+toTX
+##RAMDISK ENV:
+	setenv ramargs 'setenv bootargs root=/dev/ram rw console=ttyS0,115200 mem=2048M'
+	setenv bootcmd 'run ramargs; bootm 0xEC020000 0xED300000 0xEC800000'
+	saveenv
+
+##PCI in uboot:
+	pci header 3.0.0
+
+##to get mkfs in kernal:
+	Ex) Add the following to build/conf/local.conf IMAGE_INSTALL_append = " e2fsprogs"
+
+##Create partition table:
+	fdisk /dev/mmcblk
+	p-print partition
+	n-create partition
+	w-write partition
+
+##Formating block devices:
+	mkfs.ext2 /dev/mmcblk0p1
+
+##Mounting block devices:
+	mount /dev/mmcblk0p1 /mnt/mmc
+
+##configure kernel:
+	bitbake virtual/kernel -c configure
+	bitbake virtual/kernel -c menuconfig
+	bitbake virtual/kernel -c compile -f
+
+## DTB to DTS:
+	sudo apt-get install device-tree-compiler
+# $KERNEL/scripts/dtc/dtc -I dtb -O dts -o <dts_file> <dtb_file> [need device tree compiler]
+
+## DTS to DTB:
+	$KERNEL/scripts/dtc/dtc -I dts -O dtb -o <dtb_file> <dts_file>
+
+##google-chrome:
+	sudo apt-get install libnss3
+
+##synapse:
+	sudo add-apt-repository ppa:synapse-core/ppa 
+	sudo apt-get update
+	sudo apt-get install synapse
+
+##Sublime-Text-3:
+	sudo add-apt-repository ppa:webupd8team/sublime-text-3
+	sudo apt-get update
+	sudo apt-get install sublime-text-installer
+
+##fsl sdk dependencies:
+	sudo apt-get install g++
+	//sudo apt-get install makeinfo
+	sudo apt-get install texinfo
+	sudo apt-get install git
+	sudo apt-get install gawk
+	sudo apt-get install chrpath
+	sudo apt-get install libsdl1.2-dev
+
+##fsl sdk uboot customize:
+	bitbake -c cleansstate u-boot
+	bitbake -c patch u-boot
+	bitbake u-boot -c configure -f //not required all time
+	bitbake u-boot -c compile -f
+	bitbake u-boot
+
+## new file patch:
+diff -crB --new-file /home/user/QorIQ-SDK-V2.0-20160527-yocto/build_t1024rdb/tmp/work/t1024rdb-fsl-linux/u-boot-qoriq/2016.01+fslgit-r0/git/board/freescale/t102xrdb/ddr.h /home/user/001/CCC/git_uboot/board/freescale/t102xrdb/ddr.h
+
+##TFTP install:
+if echo "$answer" | grep -iq "^y" ;then
+	echo Yes
+	sudo mkdir -p /opt/CCC/tftp
+	sudo chmod 777 -R /opt/CCC
+	sudo rm -rf /etc/hosts.allow
+	sudo apt-get install xinetd tftpd tftp
+	sudo sh -c "echo 'service tftp
+	{
+	protocol        = udp
+	port            = 69
+	socket_type     = dgram
+	wait            = yes
+	user            = nobody
+	server          = /usr/sbin/in.tftpd
+	server_args     = /opt/CCC/tftp
+	disable         = no
+	}' >>   /etc/xinetd.d/tftp "
+	sudo sh -c "echo 'ALL: LOCAL' >> /etc/hosts.allow"
+	#sudo mkdir /tftpboot
+	sudo chmod -R 777 /opt/CCC/tftp
+	sudo chown -R nobody /opt/CCC/tftp
+	sudo service xinetd restart
+
+##uboot environment:
+	setenv ramargs 'setenv bootargs root=/dev/mmcblk0p1 rw console=ttyS0,115200 '
+	setenv bootcmd 'run ramargs; bootm 0xEC020000 0xED300000 0xEC800000'
+	saveenv
+
+##Flashing from u-boot:
+	tftp 1000 fsl_fman_ucode_t1024_r1.0_108_4_5.bin
+	protect off 0xeff40000 +$filesize
+	erase 0xeff40000 +$filesize
+	cp.b 1000 0xeff40000 $filesize
+	protect on 0xeff4 0000 +$filesize
+
+##remove hostkey from ssh:
+	ssh-keygen -f ~/.ssh/known_hosts -R 172.16.2.105
+
+
+##Add a package in YOCTO in fsl-image-minimal:
+	open /opt/CCC/QorIQ-SDK-V2.0-20160527-yocto/sources/meta-freescale/recipes-fsl/images/fsl-image-minimal.bb
+	add package
+	bitbake fsl-image-minimal
+
+i2c md 50 0.2 10
+0000: 4e 58 49 44 30 78 37 30 00 00 00 00 00 00 00 00    NXID0x70........
+=> i2c mw 50 0.2 1 1
+=> i2c md 50 0.2 10
+0000: 01 58 49 44 30 78 37 30 00 00 00 00 00 00 00 00    .XID0x70........ 
+
+=> i2c md 50 0.2 40
+0000: 01 58 49 44 30 78 37 30 00 00 00 00 00 00 00 00    .XID0x70........
+0010: ff ff ff ff ff ff ff ff ff ff ff ff 00 00 00 01    ................
+0020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff    ................
+0030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff    ................
+=> i2c mw 50 0.2 0a 40
+=> i2c md 50 0.2 40
+
+
+SPI
+1. sf probe
+
+To detect the SPI NOR flash
+syntax: sf probe [bus:]cs [hz] [mode]
+sf probe 2:0
+
+2.sf erase
+
+It is used to erase the erase blocks.
+syntax:sf erase offset len
+sf erase 0x0 0x300000
+
+3.sf write
+
+syntax: sf write mem-addr offset len
+sf write 0x42000000 0x0 0x300000
+
+4.sf read
+
+syntax: sf read mem-addr offset len
+sf read 0x42000000 0x0 0x300000
+
+----------------------------------------------------------------------------
+
+CONFIG_SPI_FLASH_STMICRO=y nand
+
+tftp -g -r SPI_ADC 172.16.2.91
+chmod a+x SPI_ADC 
+
+#define CONFIG_CMD_SF
+#define CONFIG_SPI_FLASH_BAR
+#define CONFIG_SF_DEFAULT_SPEED	10000000
+#define CONFIG_SF_DEFAULT_MODE	0
+#define CONFIG_SPI_FLASH_CS 0
+#define CONFIG_DEFAULT_SPI_BUS  0
+
+SPI ADC changes in DTB,Kernel
+DTB-> add spinode
+kernel>add enable spi_dev 
+
+##MRAM and CPLD:
+	add IFC configs in git/includes/configs/t102xrdb.h
+	add tlb entry in git/board/freescale/t1024rdb/tlb.c
+	add law entry in git/board/freescale/t1024rdb/law.c
+
+	MRAM DTS
+		mram@0,0 {
+				compatible = "everspin,mram", "mtd-ram";
+				reg = <0x0 0x0 0x80000>;
+				bank-width = <2>;
+			};
+
+##Compress everything into a tar:
+	cd /
+	sudo tar -zc -f /tmp/rootfs.tar.gz *
+
+##Saving of actuall filesystem:
+	sudo dd if=/dev/sdX of=/tmp/meinImage.img
+
+##Restore the backup:
+	sudo dd if=/tmp/meinImage.img of=/dev/sdX
+
+
+******************SimpliFi******************
+##Artik530 custom build:
+	./release.sh -c config/artik530_ubuntu.cfg  --local-rootfs ~/rootfs.tar.gz
+
+##Usb driver for Quictel:
+	enable USB driver for GSM and CDMA modems in kernel
+ 	Device Drivers →
+		[*] USB Support →
+			[*] USB Serial Converter support →
+				[*] USB driver for GSM and CDMA modems
+##Fuel gauge(LTC2941/3) support in kernel:
+	Enable
+	-> Device Drivers 
+		-> Power supply class support (POWER_SUPPLY [=y])
+			->  <*>   LTC2941/LTC2943 Battery Gauge Driver 
+##Battery charger(TI BQ25890) support in kernel:
+	Enable
+	-> Device Drivers 
+		-> Power supply class support (POWER_SUPPLY [=y])
+			->  <*>   TI BQ25890 battery charger driver  
+##LED Driver(TI LP55231) support in kernel:
+	Enable
+	-> Device Drivers
+      -> LED Support (NEW_LEDS [=y]) 
+	add led node in device tree (see am335.boneblack1.dtb at tftp)
+		lp55231@32 {
+				compatible = "ti,lp55231";
+				label = "lp5521_pri";
+				reg = <0x32>;
+				clock-mode = /bits/ 8 <1>;
+
+				chan0 {
+					chan-name = "d1";
+					led-cur = /bits/ 8 <0x14>;
+					max-cur = /bits/ 8 <0x20>;
+				};
+			~~~/upto channel 8/~~~
+	toggle led: echo "1" > sys/class/leds/d1/brightness
+##Zigbee test:
+	install latest tool
+		apt install zigbeed
+	
+	systemctl start zigbee-daemon [Enter]
+	zigbee-test [Enter]
+	You may get a preliminary screen; choose [1] [Enter] to Add new device
+	Choose [1] [Enter] to become an On/Off Switch (or [3] [Enter] for On/Off Light on 2nd A5/7/10)
+	Hit [Enter] by itself, to accept the default endpoint assignment
+	[0] [Enter] to finish.
+	[2] [Enter] to form a network(advanced)
+	Preferred channel (11, 14, 15, 19, 20, 24, 25)
+	Set channel(25): 15
+	Preferred TX (-9 ~ 8)
+	Set TX(2):8
+	Set PAN ID(0x1234):0x1234
+	[0] [Enter] Permit join.
+	Done!
+##PPP support:
+	enable support for ppp in kernel(enable all keyword)
+	download https://ppp.samba.org/download.html 
+	compile (add sudo apt install --reinstall build-essential)//user space
+	copy /usr/local/sbin/chat to /usr/sbin/
+	copy quectel-chat-connect  quectel-chat-disconnect  quectel-ppp to /etc/ppp/peers/ (/media/simplify/ppp/peers)
+	copy chap-secrets  connect-errors  options  pap-secrets  resolv.conf to /etc/ppp
+##gcc support for ubuntu RTFS:
+	sudo apt install --reinstall build-essential 
+##Change kernel configuration:
+	make ARCH=arm artik530_raptor_defconfig
+	make ARCH=arm menuconfig
+	make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage -j4
+	//to save it in /arch/arm/configs rename .config to simpliFi_defconfig
+	//change export KERNEL_DEFCONFIG=artik530_raptor_defconfig simpliFi_defconfig to export 					   KERNEL_DEFCONFIG=simpliFi_defconfig
+	//then ./release.sh -c config/artik530_ubuntu.cfg  --local-rootfs rootfs.tar.gz
+##Print variable in makefile:
+	add rule :print-%  : ; @echo $* = $($*)
+	then make print-VARIABLE
+##Rootfs mkrootfs_image.sh size issue fix
+	edit mkrootfs_image.sh line:30 to
+		resize2fs -f $TARGET_DIR/rootfs.img 2048M
+##update kernel dtb modules in artik
+	copy these files to board
+		scp arch/arm/boot/zImage root@{YOUR_BOARD_IP}:/root
+		scp arch/arm/boot/dts/s5p4418*.dtb root@{YOUR_BOARD_IP}:/root
+		scp usr/modules.img root@{YOUR_BOARD_IP}:/root
+	on your board
+		mount -o remount,rw /boot
+		cp /root/zImage /boot
+		cp /root/s5p4418*.dtb /boot
+		dd if=/root/modules.img of=/dev/mmcblk0p5
+		sync
+		reboot
+##update dtb
+	clean dtb's /arch/arm/boot/dts/ folder
+	make ARCH=arm artik530_raptor_defconfig
+	make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- dtbs
+	
+********************BBB*********************
+##Building u-boot:
+	make ARCH=arm CROSS_COMPILE=${CC} distclean
+	make ARCH=arm CROSS_COMPILE=${CC} am335x_evm_defconfig
+	make ARCH=arm CROSS_COMPILE=${CC}
+##Install arm compiler:
+	wget -c https://releases.linaro.org/components/toolchain/binaries/6.4-2017.11/arm-linux-gnueabihf/gcc- 			  linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz
+	tar xf gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz
+	export CC=`pwd`/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-
+##tftp boot:
+	setenv serverip 172.16.2.25
+	setenv autoload no
+	dhcp
+	tftp 0x82000000 zImage 
+	tftp 0x88000000 am335x-boneblack.dtb
+	setenv bootargs console=ttyO0,115200n8 root=/dev/mmcblk0p2 ro rootfstype=ext4 rootwait
+	bootz 0x82000000 - 0x88000000
+##Cross compile kernel module:
+	create a c file
+	create Makefile
+		PWD := $(shell pwd)
+		obj-m += bq2589x_charger.o bq2589x_reg.h
+
+		all:
+			make ARCH=arm CROSS_COMPILE=$(CROSS) -C $(KERNEL) SUBDIRS=$(PWD) modules
+		clean:
+			make -C $(KERNEL) SUBDIRS=$(PWD) clean
+	run cmd 
+		make KERNEL=/media/user/36dee370-d7fc-437b-932c-6b1f5cf2139a/simplify/artik530/linux-artik CROSS=${CC}
+##Mount Disk Image 
+	Eg: image name =sdimage.img
+	find partition details 
+		fdisk -u -l sdimage.img
+	find the start address and block size of partition to be mounted and mount it
+		sudo mount -o loop,offset=start_addr*blk_size sdimage.img /media/test
+##Rootfs tranfer
+	rsync -avxHAX --progress / /new-disk/
+	use this for best rsync -axHAWXS --numeric-ids --info=progress2
+
