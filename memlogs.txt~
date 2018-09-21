@@ -314,18 +314,13 @@ kernel>add enable spi_dev
 			make -C $(KERNEL) SUBDIRS=$(PWD) clean
 	run cmd 
 		make KERNEL=/media/user/36dee370-d7fc-437b-932c-6b1f5cf2139a/simplify/artik530/linux-artik CROSS=${CC}
-##Mount Disk Image: 
+##Mount Disk Image 
 	Eg: image name =sdimage.img
 	find partition details 
 		fdisk -u -l sdimage.img
 	find the start address and block size of partition to be mounted and mount it
 		sudo mount -o loop,offset=start_addr*blk_size sdimage.img /media/test
-##Rootfs transfer:
+##Rootfs tranfer
 	rsync -avxHAX --progress / /new-disk/
 	use this for best rsync -axHAWXS --numeric-ids --info=progress2
-##Play a movie:
-	ARTIK 530/710/1020 MIPI
-	mplayer -vo fbdev2 -framedrop -vf rotate=1 sample.mp4
-	ARTIK HDMI
-	mplayer -vo fbdev2 -framedrop sample.mp4
 
