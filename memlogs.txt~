@@ -192,6 +192,7 @@ kernel>add enable spi_dev
 
 ******************SimpliFi******************
 ##Artik530 custom build:
+	cd build-artik
 	./release.sh -c config/artik530_ubuntu.cfg  --local-rootfs ~/rootfs.tar.gz
 
 ##Usb driver for Quictel:
@@ -260,7 +261,7 @@ kernel>add enable spi_dev
 	make ARCH=arm menuconfig
 	make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage -j4
 	//to save it in /arch/arm/configs rename .config to simpliFi_defconfig
-	//change export KERNEL_DEFCONFIG=artik530_raptor_defconfig simpliFi_defconfig to export 					   KERNEL_DEFCONFIG=simpliFi_defconfig
+	//change export KERNEL_DEFCONFIG=artik530_raptor_defconfig simpliFi_defconfig to export				   KERNEL_DEFCONFIG=simpliFi_defconfig in /build-artik/config/artik530.cfg file
 	//then ./release.sh -c config/artik530_ubuntu.cfg  --local-rootfs rootfs.tar.gz
 ##Print variable in makefile:
 	add rule :print-%  : ; @echo $* = $($*)
@@ -280,7 +281,7 @@ kernel>add enable spi_dev
 		dd if=/root/modules.img of=/dev/mmcblk0p5
 		sync
 		reboot
-##update dtb
+##Compile dtb:
 	clean dtb's /arch/arm/boot/dts/ folder
 	make ARCH=arm artik530_raptor_defconfig
 	make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- dtbs
@@ -314,13 +315,18 @@ kernel>add enable spi_dev
 			make -C $(KERNEL) SUBDIRS=$(PWD) clean
 	run cmd 
 		make KERNEL=/media/user/36dee370-d7fc-437b-932c-6b1f5cf2139a/simplify/artik530/linux-artik CROSS=${CC}
-##Mount Disk Image 
+##Mount Disk Image: 
 	Eg: image name =sdimage.img
 	find partition details 
 		fdisk -u -l sdimage.img
 	find the start address and block size of partition to be mounted and mount it
 		sudo mount -o loop,offset=start_addr*blk_size sdimage.img /media/test
-##Rootfs tranfer
+##Rootfs transfer:
 	rsync -avxHAX --progress / /new-disk/
 	use this for best rsync -axHAWXS --numeric-ids --info=progress2
+##Play a movie:
+	ARTIK 530/710/1020 MIPI
+	mplayer -vo fbdev2 -framedrop -vf rotate=1 sample.mp4
+	ARTIK HDMI
+	mplayer -vo fbdev2 -framedrop sample.mp4
 

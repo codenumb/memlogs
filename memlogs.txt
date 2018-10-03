@@ -192,6 +192,7 @@ kernel>add enable spi_dev
 
 ******************SimpliFi******************
 ##Artik530 custom build:
+	cd build-artik
 	./release.sh -c config/artik530_ubuntu.cfg  --local-rootfs ~/rootfs.tar.gz
 
 ##Usb driver for Quictel:
@@ -260,7 +261,7 @@ kernel>add enable spi_dev
 	make ARCH=arm menuconfig
 	make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage -j4
 	//to save it in /arch/arm/configs rename .config to simpliFi_defconfig
-	//change export KERNEL_DEFCONFIG=artik530_raptor_defconfig simpliFi_defconfig to export 					   KERNEL_DEFCONFIG=simpliFi_defconfig
+	//change export KERNEL_DEFCONFIG=artik530_raptor_defconfig simpliFi_defconfig to export				   KERNEL_DEFCONFIG=simpliFi_defconfig in /build-artik/config/artik530.cfg file
 	//then ./release.sh -c config/artik530_ubuntu.cfg  --local-rootfs rootfs.tar.gz
 ##Print variable in makefile:
 	add rule :print-%  : ; @echo $* = $($*)
@@ -280,7 +281,7 @@ kernel>add enable spi_dev
 		dd if=/root/modules.img of=/dev/mmcblk0p5
 		sync
 		reboot
-##update dtb
+##Compile dtb:
 	clean dtb's /arch/arm/boot/dts/ folder
 	make ARCH=arm artik530_raptor_defconfig
 	make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- dtbs
