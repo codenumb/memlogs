@@ -263,6 +263,7 @@ kernel>add enable spi_dev
 	//to save it in /arch/arm/configs rename .config to simpliFi_defconfig
 	//change export KERNEL_DEFCONFIG=artik530_raptor_defconfig simpliFi_defconfig to export				   KERNEL_DEFCONFIG=simpliFi_defconfig in /build-artik/config/artik530.cfg file
 	//then ./release.sh -c config/artik530_ubuntu.cfg  --local-rootfs rootfs.tar.gz
+	//or ./release.sh -c config/artik533s_ubuntu.cfg  --local-rootfs /simplifi/artik533/rootfs.tar.gz
 ##Print variable in makefile:
 	add rule :print-%  : ; @echo $* = $($*)
 	then make print-VARIABLE
