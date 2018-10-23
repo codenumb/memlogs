@@ -192,6 +192,10 @@ kernel>add enable spi_dev
 
 ******************SimpliFi******************
 ##Artik530 custom build:
+	mkdir artik533s
+	cd artik533s
+	repo init -u https://github.com/SamsungARTIK/manifest.git -m artik533s_bsp.xml
+	repo sync
 	cd build-artik
 	./release.sh -c config/artik530_ubuntu.cfg  --local-rootfs ~/rootfs.tar.gz
 
