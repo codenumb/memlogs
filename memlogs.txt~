@@ -37,6 +37,10 @@ toTX
 ##google-chrome:
 	sudo apt-get install libnss3
 
+##Install kernel api man pages:
+	make mandocs
+	make installmandocs
+
 ##synapse:
 	sudo add-apt-repository ppa:synapse-core/ppa 
 	sudo apt-get update
@@ -110,7 +114,8 @@ if echo "$answer" | grep -iq "^y" ;then
 	open /opt/CCC/QorIQ-SDK-V2.0-20160527-yocto/sources/meta-freescale/recipes-fsl/images/fsl-image-minimal.bb
 	add package
 	bitbake fsl-image-minimal
-
+##Disable core
+	echo 0 > /sys/devices/system/cpu/cpu3>online
 i2c md 50 0.2 10
 0000: 4e 58 49 44 30 78 37 30 00 00 00 00 00 00 00 00    NXID0x70........
 => i2c mw 50 0.2 1 1
