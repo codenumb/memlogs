@@ -106,6 +106,19 @@ if echo "$answer" | grep -iq "^y" ;then
 	cp.b 1000 0xeff40000 $filesize
 	protect on 0xeff4 0000 +$filesize
 
+##Flash script;uboot:
+	create a flash file "Flash_script"
+		echo Flashing RCW...
+		tftp 1000000 rcw_95_1400MHz.bin
+		protect off 0xec000000 +$filesize
+		erase 0xec000000 +$filesize
+		cp.b 1000000 0xec000000 $filesize
+		protect on 0xec000000 +$filesize
+	Run command	to get Flash_script.img 
+		mkimage -T script -C none -n 'Flash_script' -d Flash_script Flash_script.img
+	Run the script img from uboot
+	
+
 ##remove hostkey from ssh:
 	ssh-keygen -f ~/.ssh/known_hosts -R 172.16.2.105
 
