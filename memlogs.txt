@@ -220,10 +220,20 @@ kernel>add enable spi_dev
 	source fsl-setup-env -m t1024rdb
 	bitbake -c cleansstate u-boot /*for first time*/
 	bitbake -c patch u-boot 	  /*for first time*/
-	bitbake -c compile -f u-boot
+	bitbake -c compile -f u-bootreflash
 	bitbake u-boot
 	see bin at deploy dir
-
+##Add kernel module
+	copy QorIQ-SDK-V2.0-20160527-yocto/sources/poky/meta-skeleton/recipes-kernel/hello-mod to layer eg: /sources/meta-freescale/recipes-kernel
+	customize .c file	
+	rename .bb file and Makefile of module
+	add 
+		CORE_IMAGE_EXTRA_INSTALL += "reflash" 	
+	to /sources/meta-freescale/recipes-fsl/images/fsl-image-minimal file
+	Run command
+		bitbake cleansstate reflash
+		bitbake reflash
+	compiled out put will be at build_t1024rdb/tmp/work/t1024rdb-fsl-linux/reflash
 ******************SimpliFi******************
 ##Artik530 custom build:
 	mkdir artik533s
