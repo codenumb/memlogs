@@ -22,6 +22,10 @@ toTX
 ##Mounting block devices:
 	mount /dev/mmcblk0p1 /mnt/mmc
 
+##Write protecting a file
+	Run command 
+	sudo chmod a-w $filename
+
 ##configure kernel:
 	bitbake virtual/kernel -c configure
 	bitbake virtual/kernel -c menuconfig
