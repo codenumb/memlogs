@@ -22,9 +22,18 @@ toTX
 ##Mounting block devices:
 	mount /dev/mmcblk0p1 /mnt/mmc
 
-##Write protecting a file
+##Write protecting a file:
 	Run command 
 	sudo chmod a-w $filename
+
+##SSH GUI:
+	Install openssh server at the remote desktop
+		sudo apt-get install openssh-server
+	Install openssh client at the client
+		sudo apt-get install openssh-client
+	Run command from client desktop
+		ssh -X usre@ipaddr
+		xterm google-chrome-stable	
 
 ##configure kernel:
 	bitbake virtual/kernel -c configure
