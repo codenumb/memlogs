@@ -19,9 +19,16 @@ toTX
 ##Formating block devices:
 	mkfs.ext2 /dev/mmcblk0p1
 
+
+## Git bundle/backup:
+	create backup of git repo
+
 ##Mounting block devices:
 	mount /dev/mmcblk0p1 /mnt/mmc
-
+		git bundle create myrepo.bundle master
+	restore backup
+		git clone myrepo.bundle -b master repofolder
+	refer:https://dzone.com/articles/git-backups-and-no-its-not
 ##Write protecting a file:
 	Run command 
 	sudo chmod a-w $filename
