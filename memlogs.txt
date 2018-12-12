@@ -254,6 +254,7 @@ kernel>add enable spi_dev
 		bitbake cleansstate reflash
 		bitbake reflash
 	compiled out put will be at build_t1024rdb/tmp/work/t1024rdb-fsl-linux/reflash
+
 ******************SimpliFi******************
 ##Artik530 custom build:
 	mkdir artik533s
@@ -398,4 +399,19 @@ kernel>add enable spi_dev
 	mplayer -vo fbdev2 -framedrop -vf rotate=1 sample.mp4
 	ARTIK HDMI
 	mplayer -vo fbdev2 -framedrop sample.mp4
+
+******************wagr******************
+
+##Adb connecting:
+	install adb devices tools
+		sudo apt-get install android-tools-adb
+	restart service
+		adb kill-server
+		sudo adb start-server
+	access device
+		adb devices
+		adb shell
+		
+	
+	
 
