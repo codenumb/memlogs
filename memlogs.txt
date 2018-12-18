@@ -446,22 +446,6 @@ kernel>add enable spi_dev
 	access device
 		adb devices
 		adb shell
-		
-	
-	
-
-******************wagr******************
-
-##Adb connecting:
-	install adb devices tools
-		sudo apt-get install android-tools-adb
-	restart service
-		adb kill-server
-		sudo adb start-server
-	access device
-		adb devices
-		adb shell
-		
 	
 	
 
