@@ -446,6 +446,20 @@ kernel>add enable spi_dev
 	access device
 		adb devices
 		adb shell
-	
-	
 
+##Input device data interpretation:
+	format
+		hexdump Bytecount | time stamp | type,code,value
+	structure
+		struct input_event {
+		struct timeval time;
+		__u16 type;
+		__u16 code;
+		__s32 value;
+		};
+		eg 00000000 | 4b a7 fb 4b e9 93 05 00 | 04 00 04 00 1e 00 07 00
+	
+	
+	
+	
+	
