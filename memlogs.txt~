@@ -34,7 +34,6 @@ toTX
 	to commit something to server
 		git config --global user.email thejaskoot@gmail.com
 		git config --global user.user codenumb
-	then do normal gitting
 
 ##Mounting block devices:
 	mount /dev/mmcblk0p1 /mnt/mmc
