@@ -25,15 +25,17 @@ toTX
 
 ##Git Start from local to server:
 	goto local dir
-		git init
-		git add origin git https://github.com/codenumb/wagr.git
-		git pull  https://github.com/codenumb/wagr master
-		git add *
-		git commit -m "first commit"
-		git push
 	to commit something to server
 		git config --global user.email thejaskoot@gmail.com
 		git config --global user.user codenumb
+	then do normal gitting
+	echo "# test" >> README.md
+		git init
+		git add README.md
+		git commit -m "first commit"
+		git remote add origin https://github.com/codenumb/test.git
+		git push -u origin master
+
 
 ##Mounting block devices:
 	mount /dev/mmcblk0p1 /mnt/mmc
