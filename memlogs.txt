@@ -19,6 +19,24 @@ toTX
 ##Formating block devices:
 	mkfs.ext2 /dev/mmcblk0p1
 
+##WiFi command line:
+Enter in wpa client interactive mode
+	# wpa_cli
+	List available access points:
+		> scan
+		> scan_results
+	Add your AP:
+		> add_network
+		> set_network 0 ssid "vodafone817E"
+		> set_network 0 psk "my-pass-phrase"
+	Select it as current:
+		> enable_network 0
+	Connect to it:
+		> reconnect
+	Check the status:
+		> status
+	Exit wpa_cli:
+		> quit
 
 ## Git bundle/backup:
 	create backup of git repo
