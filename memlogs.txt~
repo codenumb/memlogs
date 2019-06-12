@@ -19,8 +19,28 @@ toTX
 ##Formating block devices:
 	mkfs.ext2 /dev/mmcblk0p1
 
+
+## Git bundle/backup:
+	create backup of git repo
+
 ##Mounting block devices:
 	mount /dev/mmcblk0p1 /mnt/mmc
+		git bundle create myrepo.bundle master
+	restore backup
+		git clone myrepo.bundle -b master repofolder
+	refer:https://dzone.com/articles/git-backups-and-no-its-not
+##Write protecting a file:
+	Run command 
+	sudo chmod a-w $filename
+
+##SSH GUI:
+	Install openssh server at the remote desktop
+		sudo apt-get install openssh-server
+	Install openssh client at the client
+		sudo apt-get install openssh-client
+	Run command from client desktop
+		ssh -X usre@ipaddr
+		xterm google-chrome-stable	
 
 ##configure kernel:
 	bitbake virtual/kernel -c configure
@@ -29,7 +49,7 @@ toTX
 
 ## DTB to DTS:
 	sudo apt-get install device-tree-compiler
-# $KERNEL/scripts/dtc/dtc -I dtb -O dts -o <dts_file> <dtb_file> [need device tree compiler]
+# $KERNEL/scripts/dtc/dtc -I dtb -O dts -o <dts_file> <dtb_file> [need device compiler]
 
 ## DTS to DTB:
 	$KERNEL/scripts/dtc/dtc -I dts -O dtb -o <dtb_file> <dts_file>
@@ -220,9 +240,20 @@ kernel>add enable spi_dev
 	source fsl-setup-env -m t1024rdb
 	bitbake -c cleansstate u-boot /*for first time*/
 	bitbake -c patch u-boot 	  /*for first time*/
-	bitbake -c compile -f u-boot
+	bitbake -c compile -f u-bootreflash
 	bitbake u-boot
 	see bin at deploy dir
+##Add kernel module
+	copy QorIQ-SDK-V2.0-20160527-yocto/sources/poky/meta-skeleton/recipes-kernel/hello-mod to layer eg: /sources/meta-freescale/recipes-kernel
+	customize .c file	
+	rename .bb file and Makefile of module
+	add 
+		CORE_IMAGE_EXTRA_INSTALL += "reflash" 	
+	to /sources/meta-freescale/recipes-fsl/images/fsl-image-minimal file
+	Run command
+		bitbake cleansstate reflash
+		bitbake reflash
+	compiled out put will be at build_t1024rdb/tmp/work/t1024rdb-fsl-linux/reflash
 
 ******************SimpliFi******************
 ##Artik530 custom build:
@@ -368,4 +399,56 @@ kernel>add enable spi_dev
 	mplayer -vo fbdev2 -framedrop -vf rotate=1 sample.mp4
 	ARTIK HDMI
 	mplayer -vo fbdev2 -framedrop sample.mp4
+##i2c in linux: refer@ https://opensourceforu.com/2015/01/writing-i2c-clients-in-linux/
+	struct i2c_adapter: There can be multiple buses in the device each of them represented with  defined in include/linux/i2c.h.
+	The important fields are 
+		1.bus number- number provided to the adapter.
+		2.i2c algorithm- protocol which adapter works (one of pca, pcf or bitbanging).
+	struct i2c_client: Each device connected to i2c device is a i2c client represented by .
+	The important fields are 
+		1.Name-Name of the device
+		2.interrrupt number- Number of the interrupt line of the device
+		3.i2c-adapter- This is the struct i2c_adapter which represent i2c bus in which is connected
+	struct i2c_driver: For each device there will be one i2c driver to control it which represented by 
+	THe important fields are
+		1.Driver name- The name of the driver that used by the device to match the driver
+		2.Probe- probe function pointer
+	the i2c_client structure is not initialized directly, instead struct i2c_board_info is defined at board file (eg:/arch/arm/mach-imx/mac-pcm043.c:#119).This Structure copied o the 		i2c_client structure during initialization.
+	the struct i2c_board_info has following imp: fields
+		type: name of the device (copied to the field :name in the i2c_client structure).
+		addr: i2c address of device. 
+		irq : irq num
+	an array structure is created in the board file.
+	i2c Device registration:
+		Its a process with which the kernel informed about the device present on the i2c bus. The i2c devices are registered using i2c_board_info structure.The kernel get info about 		i2c devices addr,bus,irq and create i2c_device_list. Once the i2c adapter which represent this bus then the i2c_client struct is created. I2C device registration can be done in 2 		ways
+	1)when the i2c bus number is known: devices are registered using
+		int i2c_register_board_info(int busnum, struct i2c_board_info *info, unsigned len);
+	where     
+		busnum:is the bus number 
+    	info: the i2c_board_info structure of the device
+		len: number of elements in info array
+	this funtion will link the i2c_baord_info structure in __i2c_board_list which is a global linked list.Now when the i2c adapter is registered using i2c_register_adapter(defined in 		i2c/i2c-core.c),it will search for the device have same bus number as the adapter through i2c_scan_static_board_info API if i2c_board_info structure is found then a i2c_client    		object is created using i2c_new_device api.The fields in the client object is filled using info object and new device is registered in the i2c subsystem. During the registeration 		the system matches with the name if the i2c client created. If any driver name matched with the i2c client then probe routine of the driver in called. 
+	2)In some cases the instead of bus number the adapter number of device connected is known is such case the device is registered using i2c
+		struct i2c_client *	i2c_new_device(struct i2c_adapter *adap, struct i2c_board_info const *info);
+	where	
+		adap: structure representing i2c adapter
+		info: i2c board info object of each devices 
+
+##Interrupt in linux:
+	
+	
+
+******************wagr******************
+
+##Adb connecting:
+	install adb devices tools
+		sudo apt-get install android-tools-adb
+	restart service
+		adb kill-server
+		sudo adb start-server
+	access device
+		adb devices
+		adb shell
+	
+	
 

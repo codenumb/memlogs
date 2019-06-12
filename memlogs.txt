@@ -19,6 +19,8 @@ toTX
 ##Formating block devices:
 	mkfs.ext2 /dev/mmcblk0p1
 
+##Check serial port
+	stty -F /dev/ttyACM0
 
 ## Git bundle/backup:
 	create backup of git repo
@@ -433,6 +435,9 @@ kernel>add enable spi_dev
 	where	
 		adap: structure representing i2c adapter
 		info: i2c board info object of each devices 
+
+##Interrupt in linux:
+	
 	
 
 ******************wagr******************
