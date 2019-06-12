@@ -19,10 +19,51 @@ toTX
 ##Formating block devices:
 	mkfs.ext2 /dev/mmcblk0p1
 
+<<<<<<< HEAD
+##Check serial port
+	stty -F /dev/ttyACM0
+=======
+##WiFi command line:
+Enter in wpa client interactive mode
+	# wpa_cli
+	List available access points:
+		> scan
+		> scan_results
+	Add your AP:
+		> add_network
+		> set_network 0 ssid "vodafone817E"
+		> set_network 0 psk "my-pass-phrase"
+	Select it as current:
+		> enable_network 0
+	Connect to it:
+		> reconnect
+	Check the status:
+		> status
+	Exit wpa_cli:
+		> quit
+
+##Set system time:
+	enter command
+		date --set "2019-1-28 19:32"
+	to sync hwclock to current sys time
+		hwclock --syntohc
+>>>>>>> e14f8e6801bf550abcd987fcea001065e29a6f28
 
 ## Git bundle/backup:
 	create backup of git repo
 
+##Git Start from local to server:
+	goto local dir [Not required always]
+		git config --global user.email thejaskoot@gmail.com
+		git config --global user.user codenumb
+	echo "# test" >> README.md
+		git init
+		git add README.md
+		git commit -m "first commit"
+		git remote add origin https://github.com/codenumb/test.git
+		git push -u origin master
+	then do normal gitting
+	
 ##Mounting block devices:
 	mount /dev/mmcblk0p1 /mnt/mmc
 		git bundle create myrepo.bundle master
@@ -449,6 +490,20 @@ kernel>add enable spi_dev
 	access device
 		adb devices
 		adb shell
-	
-	
 
+##Input device data interpretation:
+	format
+		hexdump Bytecount | time stamp | type,code,value
+	structure
+		struct input_event {
+		struct timeval time;
+		__u16 type;
+		__u16 code;
+		__s32 value;
+		};
+		eg 00000000 | 4b a7 fb 4b e9 93 05 00 | 04 00 04 00 1e 00 07 00
+##Wagr menuconfig:
+	MACHINE=mdm9607 bitbake linux-quic -c menuconfig
+	
+	
+	
