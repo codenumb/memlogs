@@ -15,7 +15,7 @@ toTX
 	p-print partition
 	n-create partition
 	w-write partition
-
+	
 ##Check serial port
 	stty -F /dev/ttyACM0
 
@@ -55,6 +55,11 @@ Enter in wpa client interactive mode
 ## Git bundle/backup:
 	create backup of git repo
 
+##Virtual box:
+	install guest_additions in host for full screeen, clipboard,shared folder 
+		sudo apt-get install virtualbox-guest-additions-iso
+	then install from virual machine devices->insatll guest addition CD image
+	restart vm.
 ##Git Start from local to server:
 	goto local dir [Not required always]
 		git config --global user.email thejaskoot@gmail.com
@@ -104,6 +109,11 @@ Enter in wpa client interactive mode
 ##Install kernel api man pages:
 	make mandocs
 	make installmandocs
+
+##Install kernel to Ubuntu
+	sudo apt-get update && sudo apt-get install linux-image-3.5.0-40-generic linux-headers-3.5.0-40-generic linux-headers-3.5.0-40
+	then update grub 
+	sudo apt-gey upfa
 
 ##synapse:
 	sudo add-apt-repository ppa:synapse-core/ppa 
@@ -284,7 +294,7 @@ kernel>add enable spi_dev
 	source fsl-setup-env -m t1024rdb
 	bitbake -c cleansstate u-boot /*for first time*/
 	bitbake -c patch u-boot 	  /*for first time*/
-	bitbake -c compile -f u-bootreflash
+	bitbake -c compile -f u-boot
 	bitbake u-boot
 	see bin at deploy dir
 ##Add kernel module
