@@ -515,8 +515,11 @@ kernel>add enable spi_dev
 		__s32 value;
 		};
 		eg 00000000 | 4b a7 fb 4b e9 93 05 00 | 04 00 04 00 1e 00 07 00
-##Wagr menuconfig:
-	MACHINE=mdm9607 bitbake linux-quic -c menuconfig
+##Wagr driver compilation:
+	MACHINE=mdm9607 bitbake -fc cleanall linux-quic
+	MACHINE=mdm9607 bitbake linux-quic -c menuconfig //check wagr: is added in config
+	MACHINE=mdm9607 bitbake linux-quic -c compile -f
+	MACHINE=mdm9607 bitbake linux-quic
 	
 	
 	
