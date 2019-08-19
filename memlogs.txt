@@ -520,6 +520,7 @@ kernel>add enable spi_dev
 	MACHINE=mdm9607 bitbake linux-quic -c menuconfig //check wagr: is added in config
 	MACHINE=mdm9607 bitbake linux-quic -c compile -f
 	MACHINE=mdm9607 bitbake linux-quic
-	
+##i2c details:
+	cd /sys/firmware/devicetree/base/soc/i2c@78b8000 
 	
 	
