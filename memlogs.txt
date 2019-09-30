@@ -564,6 +564,14 @@ kernel>add enable spi_dev
 	#### Sample Regexs ####
 
 	[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+
-
+##memory dump of a process
+	cat /proc/{PID}/statm
+		size (mapped to VIRT), 
+		resident (mapped to RES), 
+		share (mapped to SHR), 
+		text (mapped to CODE), 
+		lib (always 0 on Linux 2.6+), 
+		data (mapped to DATA) and 
+		dt (always 0 on Linux 2.6+, mapped to nDrt).
 	
 	
