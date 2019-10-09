@@ -59,6 +59,15 @@ Enter in wpa client interactive mode
 	Create a branch in local and push data to local
 		git checkout -b [name of the branch]
 		git push origin [name of the branch]
+	Delete a branch from  local
+		git branch -b [branch name]
+	then apply delete effect on remote
+		git push origin :[branch name]
+	git merge with other branch
+		eg: master <- branch1
+		git checkout master
+		git merge branch
+		git push origin master
 	Add a remote origin for the branch 
 		git remote add [remote] [name of the branch]
 	Push changes from your commit into your branch
@@ -573,6 +582,3 @@ kernel>add enable spi_dev
 		lib (always 0 on Linux 2.6+), 
 		data (mapped to DATA) and 
 		dt (always 0 on Linux 2.6+, mapped to nDrt).
-	
-	
-from branch1
