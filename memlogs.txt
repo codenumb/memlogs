@@ -575,3 +575,4 @@ kernel>add enable spi_dev
 		dt (always 0 on Linux 2.6+, mapped to nDrt).
 	
 	
+from branch1
