@@ -582,3 +582,5 @@ kernel>add enable spi_dev
 		lib (always 0 on Linux 2.6+), 
 		data (mapped to DATA) and 
 		dt (always 0 on Linux 2.6+, mapped to nDrt).
+##Core dump:
+	pattern : cat /proc/sys/kernel/core_pattern
