@@ -592,3 +592,6 @@ kernel>add enable spi_dev
 	./configure --with-libssh2
 	make
 	sudo make install
+## wakelock module library
+	libtrakrutils.so -> /usr/lib
+
