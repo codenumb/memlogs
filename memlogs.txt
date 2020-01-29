@@ -587,11 +587,16 @@ kernel>add enable spi_dev
 ##ftp server 
 	ssh root@139.59.68.161
 	pass:mobi*s*****
-## lib curl ftps config while installing
+## lib curl ftps config while installing:
 	download libcurl source
 	./configure --with-libssh2
 	make
 	sudo make install
-## wakelock module library
+## wakelock module library:
 	libtrakrutils.so -> /usr/lib
-
+##wagr dtb location: 
+	~/apps_proc/poky/build/tmp-glibc/work-shared/mdm9607/kernel-build-artifacts/arch/arm/boot/dts/qcom
+##wagr dts location:
+	~/pps_proc/kernel/msm-3.18/arch/arm/boot/dts/qcom/mdm9607.dtsi
+## wagr defconfig:
+	~/apps_proc/kernel/msm-3.18/arch/arm/configs/mdm9607_defconfig
