@@ -533,7 +533,7 @@ kernel>add enable spi_dev
 		__s32 value;
 		};
 		eg 00000000 | 4b a7 fb 4b e9 93 05 00 | 04 00 04 00 1e 00 07 00
-##Wagr driver compilation:
+##Wagr gpio  driver compilation:
 	MACHINE=mdm9607 bitbake -fc cleanall linux-quic
 	MACHINE=mdm9607 bitbake linux-quic -c menuconfig //check wagr: is added in config
 	MACHINE=mdm9607 bitbake linux-quic -c compile -f
@@ -597,6 +597,11 @@ kernel>add enable spi_dev
 ##wagr dtb location: 
 	~/apps_proc/poky/build/tmp-glibc/work-shared/mdm9607/kernel-build-artifacts/arch/arm/boot/dts/qcom
 ##wagr dts location:
-	~/pps_proc/kernel/msm-3.18/arch/arm/boot/dts/qcom/mdm9607.dtsi
-## wagr defconfig:
+	~/apps_proc/kernel/msm-3.18/arch/arm/boot/dts/qcom/mdm9607.dtsi
+##wagr defconfig:
 	~/apps_proc/kernel/msm-3.18/arch/arm/configs/mdm9607_defconfig
+##wagr hostlisting
+	-run:
+		tcpdump -i rmnet_data0 -q -n -w /data/hostlist_gsm.txt
+	-kill tcpdump.
+	-run tcpdump -q -n -r  data/hostlist_gsm.txt
