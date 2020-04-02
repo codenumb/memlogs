@@ -9,7 +9,15 @@ toTX
 
 ##to get mkfs in kernal:
 	Ex) Add the following to build/conf/local.conf IMAGE_INSTALL_append = " e2fsprogs"
-
+##wifi dongle driver:
+	sudo apt-get install linux-headers-generic build-essential git
+	git clone https://github.com/art567/mt7601usta.git
+	cd mt7601usta/src 
+	make
+	sudo make install
+	sudo mkdir -p /etc/Wireless/RT2870STA/
+	sudo cp RT2870STA.dat /etc/Wireless/RT2870STA/
+	sudo modprobe mt7601Usta
 ##Create partition table:
 	fdisk /dev/mmcblk
 	p-print partition
@@ -534,6 +542,12 @@ kernel>add enable spi_dev
 		};
 		eg 00000000 | 4b a7 fb 4b e9 93 05 00 | 04 00 04 00 1e 00 07 00
 ##Wagr gpio  driver compilation:
+	add gpioirq folder to the kernel/Drivers/
+	add this [source "drivers/gpioirq/Kconfig"] to kernel/Drivers/Kconfig
+	add this [obj-$(CONFIG_WAGR_GPIO)   += gpioirq/] to kernel/Drivers/makefile
+	enable wagrgpio in kernel menuconfig
+	.config file of the mdm9607 /home/user/wagr/codebase/apps_proc/poky/build/tmp-glibc/work/mdm9607-oe-linux-gnueabi/linux-quic/git-r5/build
+	Then  compile
 	MACHINE=mdm9607 bitbake -fc cleanall linux-quic
 	MACHINE=mdm9607 bitbake linux-quic -c menuconfig //check wagr: is added in config
 	MACHINE=mdm9607 bitbake linux-quic -c compile -f
@@ -542,6 +556,12 @@ kernel>add enable spi_dev
 	cd /sys/firmware/devicetree/base/soc/i2c@78b8000 
 ##wagr app running
 	export `cat /data/bus_addr.txt`
+## lsm6ds3 iio sensor settings:
+	download iio from https://tinyurl.com/r9la6f6 and copy st_lsm6ds3 to /kernel/Drivers/iio/imu/
+	add [obj-y += st_lsm6ds3/] to /kernel/Drivers/iio/imu/Makefile 
+	add [source "drivers/iio/imu/st_lsm6ds3/Kconfig"] to /kernel/Drivers/iio/imu/kconfig
+	Enable Device Drivers  ---><M> Industrial I/O support  --->Inertial measurement units  ---><M>   STMicroelectronics LSM6DSM/LSM6DSL sensor 		
+  		
 
 ##Regular expression:
 	.       - Any Character Except New Line
@@ -605,3 +625,29 @@ kernel>add enable spi_dev
 		tcpdump -i rmnet_data0 -q -n -w /data/hostlist_gsm.txt
 	-kill tcpdump.
 	-run tcpdump -q -n -r  data/hostlist_gsm.txt
+##kernal configs print
+	-run:
+	zcat /proc/config.gzc
+
+
+******************csharp******************
+##Setting up environment:
+	Install vsc and .net core.
+	Open vsc and install .net extension.
+	-Open a folder in vsc run vsc console command:
+		dotnet new console
+	- To run a application
+		dotnet run
+##Compilation from in terminal
+	-Save the source file in <source>.cs format
+	-Run command to compile
+		dotnet build <vsc project>.csharp
+
+
+******************VScode******************
+##Key bindings
+	Ctrl+p = search files to open
+	Ctrl+t = search any function defenition in workspace
+	Ctrl+Shift+o= search in local file
+	Shift+F12 = show refernces of a sympol 
+		
